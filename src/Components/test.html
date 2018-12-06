@@ -1,0 +1,12 @@
+<p id="demo"></p>
+
+<script>
+  item = [];
+  for (i = 1; i < 100; i++) {
+    item = [
+      ...item,
+      i % 5 && i % 3 ? i : i % 5 ? "biz" : i % 3 ? "buz" : "buzbiz"
+    ];
+  }
+  document.getElementById("demo").innerHTML = item;
+</script>

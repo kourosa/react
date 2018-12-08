@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 
 class NewItem extends Component {
-  show(a) {
-    console.log(a);
+  constructor(props) {
+    super(props);
+    this.state = {}
+    console.log('props new item:', this.props);
   }
+
   render() {
+
     return (
-      <div className="col-6 m-1" style={{ backgroundColor: "silver" }}>
+      <div >
         <form>
           <label>
             <strong>Add item:</strong>
@@ -14,7 +18,7 @@ class NewItem extends Component {
           </label>
           <button
             type="button"
-            className="btn btn-light btn-sm"
+            className="btn btn-outline-primary"
             onClick={this.props.onAddProduct}
           >
             Add Item

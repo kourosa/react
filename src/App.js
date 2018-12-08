@@ -8,15 +8,17 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import NewItem from "./Components/NewItem";
-import List from "./Components/list";
 import PropTypes from "prop-types";
-import Stateless from "./Components/Stateless";
+import LoginButton from "./Components/LoginButton";
 
 const Counters = React.lazy(() => import("./Components/counters"));
 
 class App extends Component {
-  states = {
+  state = {
+    user: "Kouros",
     value: "ass",
+    counter: 1,
+    loginValue: "LogIn",
     logedIn: false,
     products: [
       { name: "Apple", id: 1, value: 1 },
@@ -25,25 +27,25 @@ class App extends Component {
     ]
   };
 
-  componentDidMount() {
-    console.log("test did mount");
+  constructor(props) {
+    super(props);
+    this.handleLogin = this.handleLogin.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleAddProduct = this.handleAddProduct.bind(this);
+    this.handleIncreament = this.handleIncreament.bind(this);
+    this.handleDecreament = this.handleDecreament.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   render() {
     return (
       <div dk="App" className="container-fluid">
-        <input
-          type="button"
-          className="btn btn-sm btn-danger m-1"
-          onClick={() => {
-            this.states.logedIn = !this.states.logedIn;
-            this.setState({ logedIn: this.states.logedIn });
-            console.log(this.states.logedIn);
-          }}
-          value={this.states.logedIn ? "Log out" : "Log in"}
-        >
-
-        </input>
+        <LoginButton
+          logedIn={this.state.logedIn}
+          useName={this.state.useName}
+          onHello={this.handleLogin}
+        />
 
         <Router>
           <div>
@@ -51,78 +53,105 @@ class App extends Component {
               path="/user/:id"
               exact
               render={({ match }) =>
-                this.states.logedIn ? (
+                this.state.logedIn ? (
                   <div>
-                    <Stateless paramdata={match.params} />
                     <NewItem
                       onAddProduct={this.handleAddProduct}
                       onChange={this.handleChange}
                     />
                   </div>
                 ) : (
-                    <Redirect to="" />
-                  )
+                  <Redirect to="" />
+                )
               }
             />
-
+            <ul>
+              <li>
+                <NavLink to="/user" exact activeStyle={{ color: "red" }}>
+                  All Users...
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/user/Additem"
+                  exact
+                  activeStyle={{ color: "red" }}
+                >
+                  Additem
+                </NavLink>
+              </li>
+            </ul>
             <NavLink to="/user" exact activeStyle={{ color: "red" }}>
               All Users...
             </NavLink>
-            <NavLink to="/user/Additem" activeStyle={{ color: "red" }}>
+            <NavLink to="/user/Additem" exact activeStyle={{ color: "red" }}>
               Additem
             </NavLink>
           </div>
         </Router>
         <Suspense fallback={<div>Loading...</div>}>
           <Counters
-            product={this.states.products}
+            product={this.state.products}
             onDelete={this.handleDelete}
             onAddProduct={this.handleAddProduct}
             onIncreament={this.handleIncreament}
             onDecreament={this.handleDecreament}
             onChange={this.handleChange}
           />
-          <List />
         </Suspense>
       </div>
     );
   }
 
+  handleLogin = () => {
+    {
+      console.log("handleLogin");
+      this.setState(prevState => ({ logedIn: !prevState.logedIn }));
+    }
+  };
+
   handleDelete = productTobeDeleted => {
-    this.states.products = this.states.products.filter(
+    this.state.products = this.state.products.filter(
       c => c.name !== productTobeDeleted.name
     );
-    this.setState(this.states.products);
+    this.setState(this.state.products);
   };
 
   handleChange = event => {
     this.setState({ value: event.target.value });
-    this.states.value = event.target.value;
-    console.log(event.target.value);
+    this.state.value = event.target.value;
   };
 
   handleAddProduct = () => {
-    let item = { name: this.state.value, id: 22, value: 1 };
-    this.states.products = [...this.states.products, item];
-    this.setState(this.states.products);
+    let item = { name: this.state.value, id: 22, value: 0 };
+    let products = [...this.state.products, item];
+    this.setState(prevState => ({ products }));
+  };
 
-    // this.setState(prevState => ({ products }));
+  handleLogin = () => {
+    {
+      console.log("handleLogin");
+      this.setState(prevState => ({ logedIn: !prevState.logedIn }));
+    }
   };
 
   handleIncreament = item => {
-    const products = [...this.states.products];
+    const products = [...this.state.products];
     let index = products.indexOf(item);
     products[index].value++;
     this.setState(products);
   };
 
   handleDecreament = item => {
-    let products = this.states.products;
+    let products = this.state.products;
     let index = products.indexOf(item);
     if (products[index].value > 0) products[index].value--;
-
     this.setState({ products });
   };
+
+  componentDidMount() {
+    console.log(" did mountd ");
+  }
 }
 
 export default App;
